@@ -15,10 +15,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid mx-5 px-5">
       <a class="navbar-brand fw-bold fs-3" href="#">Smart Irrigation System</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarColor01">
+      
+      <div class="navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
@@ -35,7 +33,7 @@
  
   </head>
   <body>
-   <div class="container-fluid p-5">
+   <div class="container p-5">
         <div class="row mb-5">
             <div class="col">
                 <p class="fs-2">Temperature</p>
@@ -48,76 +46,94 @@
               <!--* Card init *-->
              </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <p class="fs-2">pH of Soil</p>
-        </div>
-        <div class="col">
-          <p class="fs-2">Water Availability</p>
-        </div>
-      </div>
-   </div>
+      
 
    <script>
     const temp = document.getElementById("temp");
     const water = document.getElementById("soil");
-    console.log(temp);
     
-    let tempc = new Chart(temp,{
+    var tmp,temptime,wtr,watertime;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', "http://biometric-hook.000webhostapp.com/garden_api/dashboard.php", true);
+    xhr.send();
+ 
+    xhr.onreadystatechange = processRequest;
+    function processRequest(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        let response = JSON.parse(xhr.responseText);
+        
+        var temptime =response[0][0];
+        var tmp = response[0][1];
+        var watertime = response[1][0];
+        var wtr = response[1][1];
+        
+        //--------------------------Temp graph------------------------
+        let tempc = new Chart(temp,{
         type:'line',
         data: {
-        labels: ['9AM', '10AM', '11AM', '12AM', '1PM', '2PM','3PM'],
+        labels: temptime,
         datasets: [{
             label: 'Temperature in Celsius',
-            data: [12, 15, 25, 5, 2, 3,15],
+            data: tmp,
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 255, 0, 0.3)',
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 255, 0, 0.3)'
             ],
             borderColor: [
-                'rgba(255, 99, 132, 1)',
+                'rgba(255, 165, 0, 1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+                'rgba(255, 165, 0, 1)'
             ],
             borderWidth: 1
         }]
     }
     });
-
-    let soilc = new Chart(soil,{
+        
+    //--------------------------------------------------------------------
+    //------------------moisture graph-----------------------------
+        
+        let soilc = new Chart(water,{
         type:'line',
         data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: watertime,
         datasets: [{
             label: '% of Moisture in Soil',
-            data: [12, 19, 3, 5, 2, 3],
+            data:wtr ,
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
+                'rgba(0, 0, 255, 0.3)',
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(0, 0, 255, 0.3)'
             ],
             borderColor: [
-                'rgba(255, 99, 132, 1)',
+                'rgba(0, 0, 255, 1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+                'rgba(0, 0, 255, 1)'
             ],
             borderWidth: 1
         }]
     }
     });
+        
+    //-------------------------------------------------------------------------
+        }
+    }
+
+    
+    
 
 
    </script>
