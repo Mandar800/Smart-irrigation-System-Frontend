@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script tpye="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <title>Smart Irrigation System</title>
+    
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid mx-5 px-5">
+      <a class="navbar-brand fw-bold fs-3" href="#">Smart Irrigation System</a>
+      
+      <div class="navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="dashboard.html">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="analysis.html">Analysis</a>
+          </li>
+          
+        </ul>
+        
+      </div>
+    </div>
+  </nav>
+ 
+  </head>
+  <body>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    
+   <div class="container mx-5 px-5">
+    
+        <div class="row fs-4 m-5 fw-bold">
+            <div class="col">
+              <p>Avgerage Temperature Today : </p>
+            </div>
+            <div class="col text-warning">
+              <p id="temp"></p>
+            </div>
+        </div>
+
+        <div class="row fs-4 m-5 fw-bold">
+            <div class="col">
+              <p>Avgerage Soil Moisture Content Today : </p>
+            </div>
+            <div class="col text-primary">
+              <p id="water"></p>
+            </div>
+        </div>
+        
+        <div class="row fs-3 m-5 fw-bold">
+            <div class="col text-success">
+              <p id="result"></p>
+            </div>
+        </div>
+        
+       
+    </div>
+   
+   
+   </body>
+
+
+   <script >
+   var temp =  document.getElementById("temp");
+   var water =  document.getElementById("water");
+    var result = document.getElementById("result");
+    var t;
+    var w;
+
+let xhr = new XMLHttpRequest();
+    xhr.open('GET', "http://biometric-hook.000webhostapp.com/garden_api/getAvgTemp.php", true);
+    xhr.send();
+    xhr.onreadystatechange = processRequest;
+    
+    function processRequest(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        let response = JSON.parse(xhr.responseText);
+        t=parseInt(response);
+        temp.innerHTML = response+" °C";
+        console.log(response);
+        if(w<60){
+            if(t>28){
+                result.innerHTML = "Temperature is High!!! Water Alot";
+            }else{
+                result.innerHTML = "Temperature is Low!!! Water Less";
+            }
+        }else{
+            result.innerHTML = " Soil is Already Wet!!! No Need to Water";
+        }
+        
+    }
+    }
+    
+let xhrr = new XMLHttpRequest();
+    xhrr.open('GET', "http://biometric-hook.000webhostapp.com/garden_api/getAvgWater.php", true);
+    xhrr.send();
+    xhrr.onreadystatechange = processReq;
+    
+    function processReq(e) {
+    if (xhrr.readyState == 4 && xhrr.status == 200) {
+        let resp = JSON.parse(xhrr.responseText);
+        w=parseInt(resp);
+        water.innerHTML = resp+" %";
+        console.log(resp);
+        
+        if(w<60){
+            if(t>28){
+                result.innerHTML = "Temperature is High!!! Water More";
+            }else{
+                result.innerHTML = "Temperature is Low!!! Water Less";
+            }
+        }else{
+            result.innerHTML = " Soil is Already Wet!!! No Need to Water";
+        }
+    }
+    }
+    
+    
+    
+
+   </script>
+</html>
